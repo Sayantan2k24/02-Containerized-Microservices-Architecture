@@ -9,6 +9,8 @@ services:
       - postgres
     environment:
       - FLASK_ENV=development
+    networks:
+      - custom-net
 
   data-service:
     build: ./data-service
@@ -18,6 +20,8 @@ services:
       - redis
     environment:
       - FLASK_ENV=development
+    networks:
+      - custom-net
 
   postgres:
     image: postgres:13
@@ -30,12 +34,19 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - custom-net
 
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
+    networks:
+      - custom-net
 
 volumes:
   pgdata:
 
+networks:
+  custom-net:
+    driver: bridge
